@@ -45,19 +45,24 @@
                 </el-row>
 
                 <el-table v-loading="loading" :data="commodityList" @selection-change="handleSelectionChange">
-                    <el-table-column type="selection" width="55" align="center" /><el-table-column label="商品名称"
-                        align="center" prop="commodityName" :show-overflow-tooltip="true" /><el-table-column label="品牌名称"
-                        align="center" prop="commodityBrandId" :formatter="commodityBrandIdFormat" width="100">
+                    <el-table-column type="selection" width="55" align="center" />
+                    <el-table-column label="商品名称" align="center" prop="commodityName" :show-overflow-tooltip="true" />
+                    <el-table-column label="品牌名称" align="center" prop="commodityBrandId" :formatter="commodityBrandIdFormat">
                         <template slot-scope="scope">
                             {{ commodityBrandIdFormat(scope.row) }}
                         </template>
-                    </el-table-column><el-table-column label="品类名称" align="center" prop="commodityCategoryId"
-                        :formatter="commodityCategoryIdFormat" width="100">
+                    </el-table-column>
+                    <el-table-column label="品类名称" align="center" prop="commodityCategoryId" :formatter="commodityCategoryIdFormat">
                         <template slot-scope="scope">
                             {{ commodityCategoryIdFormat(scope.row) }}
                         </template>
-                    </el-table-column><el-table-column label="商品展示" align="center" prop="avatar"
-                        :show-overflow-tooltip="true" /><el-table-column label="商品备注" align="center" prop="commodityRemark"
+                    </el-table-column>
+                    <el-table-column label="商品展示" align="center" prop="avatar" :show-overflow-tooltip="true">
+                        <template slot-scope="scope">
+                            <img :src="formatPic(scope.row.avatar)" width="55" height="55">
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="商品备注" align="center" prop="commodityRemark"
                         :show-overflow-tooltip="true" />
                     <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
@@ -87,14 +92,26 @@
                         <el-form-item label="商品名称" prop="commodityName">
                             <el-input v-model="form.commodityName" placeholder="商品名称" />
                         </el-form-item>
-                        <el-form-item label="商品品牌id" prop="commodityBrandId">
-                            <el-input v-model="form.commodityBrandId" placeholder="商品品牌id" />
+                        <el-form-item label="品牌名称" prop="commodityBrandId">
+                            <el-select v-model="form.commodityBrandId" placeholder="请选择" >
+                            <el-option v-for="dict in commodityBrandIdOptions" :key="dict.key" :label="dict.value"
+                                :value="dict.key" />
+                        </el-select>
                         </el-form-item>
-                        <el-form-item label="商品品类id" prop="commodityCategoryId">
-                            <el-input v-model="form.commodityCategoryId" placeholder="商品品类id" />
+                        <el-form-item label="品类名称" prop="commodityCategoryId">
+                            <el-select v-model="form.commodityCategoryId" placeholder="请选择">
+                            <el-option v-for="dict in commodityCategoryIdOptions" :key="dict.key" :label="dict.value"
+                                :value="dict.key" />
+                        </el-select>
                         </el-form-item>
                         <el-form-item label="商品展示" prop="avatar">
-                            <el-input v-model="form.avatar" placeholder="商品展示" />
+                            <!-- <el-input v-model="form.avatar" placeholder="商品展示" /> -->
+                            <el-upload action="#" :http-request="requestUpload" :show-file-list="false" :before-upload="beforeUpload">
+                                <el-button size="small">
+                                    上传
+                                <i class="el-icon-upload el-icon--right" />
+                                </el-button>
+                            </el-upload>
                         </el-form-item>
                         <el-form-item label="商品备注" prop="commodityRemark">
                             <el-input v-model="form.commodityRemark" placeholder="商品备注" />
@@ -202,6 +219,19 @@ export default {
             }
             this.resetForm('form')
         },
+        requestUpload() {
+        },
+        beforeUpload(file) {
+            if (file.type.indexOf('image/') === -1) {
+                this.msgError('文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。')
+            } else {
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onload = () => {
+                    console.log(reader.result)
+                }
+            }
+        },
         getImgList: function () {
             this.form[this.fileIndex] = this.$refs['fileChoose'].resultList[0].fullUrl
         },
@@ -213,6 +243,9 @@ export default {
         },
         commodityCategoryIdFormat(row) {
             return this.selectItemsLabel(this.commodityCategoryIdOptions, row.commodityCategoryId)
+        },
+        formatPic(avatar) {
+            return "http://localhost:8000" + avatar
         },
         // 关系
         getBrandItems() {
