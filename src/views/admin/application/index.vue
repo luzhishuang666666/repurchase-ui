@@ -295,6 +295,52 @@
                    }
                 }).catch(function () {
                 })
+            },
+            /**审批拒绝 */
+            handleRefuse(row) {
+                var id = row.id 
+                var type = row.type
+                var opinion = 0
+
+                this.$confirm('是否确认拒绝编号为"' + id + '"的数据项?', '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                      return approvalApplication( { 'id': id,'type':type,'opinion':opinion })
+                }).then((response) => {
+                   if (response.code === 200) {
+                     this.msgSuccess(response.msg)
+                     this.open = false
+                     this.getList()
+                   } else {
+                     this.msgError(response.msg)
+                   }
+                }).catch(function () {
+                })
+            },
+            /**审批通过 */
+            handlePass(row) {
+                var id = row.id 
+                var type = row.type
+                var opinion = 1
+
+                this.$confirm('是否确认通过编号为"' + id + '"的数据项?', '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                      return approvalApplication( { 'id': id,'type':type,'opinion':opinion })
+                }).then((response) => {
+                   if (response.code === 200) {
+                     this.msgSuccess(response.msg)
+                     this.open = false
+                     this.getList()
+                   } else {
+                     this.msgError(response.msg)
+                   }
+                }).catch(function () {
+                })
             }
         }
     }

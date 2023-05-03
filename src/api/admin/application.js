@@ -45,3 +45,12 @@ export function delApplication(data) {
     })
 }
 
+// 审批Application
+export function approvalApplication(data) {
+    return request({
+        url: '/api/v1/application/approval',
+        method: 'post',
+        data: data
+    })
+}
+
