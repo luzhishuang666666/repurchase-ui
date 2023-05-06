@@ -96,6 +96,20 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user', noCache: true }
       }
     ]
+  },
+  {
+    path: '/shopdetail',
+    component: Layout,
+    redirect: '/shopdetail/:id',
+    hidden: true,
+    children: [
+      {
+        path: ':id',
+        component: () => import('@/views/admin/shopdetail/index'),
+        name: 'shopdetail',
+        meta: { title: '商店详情', icon: 'user', noCache: true }
+      }
+    ]
   }
 ]
 
