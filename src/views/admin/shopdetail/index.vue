@@ -44,6 +44,36 @@
               </div>
             </el-card>
           </el-col>
+          <el-col :span="18" :xs="24">
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span>商店销量排行榜</span>
+            </div>
+            <el-tabs v-model="activeTab">
+              <el-tab-pane label="日排行榜" name="dayRankingList">
+                <el-table :data="dayRankingList">
+                  <el-table-column prop="commodity_name" label="商品名称"></el-table-column>
+                  <el-table-column prop="commodity_score" label="商品销量"></el-table-column>
+                  <el-table-column prop="commodity_trend" label="趋势"></el-table-column>
+                </el-table>
+              </el-tab-pane>
+              <el-tab-pane label="月排行榜" name="monthRankingList">
+                <el-table :data="monthRankingList">
+                  <el-table-column prop="commodity_name" label="商品名称"></el-table-column>
+                  <el-table-column prop="commodity_score" label="商品销量"></el-table-column>
+                  <el-table-column prop="commodity_trend" label="趋势"></el-table-column>
+                </el-table>
+              </el-tab-pane>
+              <el-tab-pane label="年排行榜" name="yeyearRankingListar">
+                <el-table :data="yearRankingList">
+                  <el-table-column prop="commodity_name" label="商品名称"></el-table-column>
+                  <el-table-column prop="commodity_score" label="商品销量"></el-table-column>
+                  <el-table-column prop="commodity_trend" label="趋势"></el-table-column>
+                </el-table>
+              </el-tab-pane>
+            </el-tabs>
+          </el-card>
+        </el-col>
         </el-row>
       </template>
     </BasicLayout>
@@ -52,7 +82,7 @@
 <script>
 import userAvatar from './userAvatar'
 import { getUserProfile } from '@/api/admin/sys-user'
-import { addShop, delShop, getShop, listShop, updateShop, changeShopStatus } from '@/api/admin/shop'
+import { addShop, delShop, getShop, listShop, updateShop, changeShopStatus, getShopRank } from '@/api/admin/shop'
 
 export default {
   name: 'ShopDetail',
@@ -66,12 +96,16 @@ export default {
       roleIds: undefined,
       roleName: undefined,
       dept: {},
-      deptName: undefined
+      deptName: undefined,
+      dayRankingList: [],
+      monthRankingList: [],
+      yearRankingList: [],
     }
   },
   created() {
     this.getUser(),
-    this.getShop()
+    this.getShop(),
+    this.getShopRank()
   },
   methods: {
     /** 获取个人信息 */
@@ -103,6 +137,18 @@ export default {
                 this.msgError(response.msg)
             }
         })
+    },
+    getShopRank() {
+      getShopRank(this.id).then(response =>{
+        if (response.code === 200) {
+                this.dayRankingList = response.data.day
+                this.monthRankingList = response.data.month
+                this.yearRankingList = response.data.year
+                console.log(this.dayRankingList)
+            }else {
+                this.msgError(response.msg)
+            }
+      })
     }
   }
 }

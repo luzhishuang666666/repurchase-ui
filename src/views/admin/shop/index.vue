@@ -80,6 +80,7 @@
                            >修改
                            </el-button>
                          </el-popconfirm> -->
+                         <el-button slot="reference" v-permisaction="['admin:shop:edit']" size="small" type="success" icon="el-icon-edit" @click="handleAnalyse(scope.row.id)">数据分析</el-button>
                          <el-button slot="reference" v-permisaction="['admin:shop:edit']" size="small" type="info" icon="el-icon-edit" @click="handleDetail(scope.row.id)">详情</el-button>
                          <!-- <el-button
                             slot="reference"
@@ -233,6 +234,9 @@ import router from '@/router'
             },
             handleDetail(id) {
                 this.$router.push({ path: `/shopdetail/${id}` })
+            },
+            handleAnalyse(id) {
+                this.$router.push({ path: `/shopanalyse/${id}` })
             },
             statusFormat(row) {
                 return this.selectDictLabel(this.statusOptions, row.status)

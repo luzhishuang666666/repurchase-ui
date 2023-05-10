@@ -53,3 +53,18 @@ export function delShop(data) {
     })
 }
 
+// 获取商店排行榜
+export function getShopRank(id) {
+    return request({
+        url: '/api/v1/shop/shopRank/' + id,
+        method: 'get'
+    })
+}
+
+// 获取商店数据分析
+export function getShopAnalise(id) {
+    return request({
+        url: '/api/v1/shop/shopAnalise/' + id,
+        method: 'get'
+    })
+}

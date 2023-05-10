@@ -110,6 +110,20 @@ export const constantRoutes = [
         meta: { title: '商店详情', icon: 'user', noCache: true }
       }
     ]
+  },
+  {
+    path: '/shopanalyse',
+    component: Layout,
+    redirect: '/shopanalyse/:id',
+    hidden: true,
+    children: [
+      {
+        path: ':id',
+        component: () => import('@/views/admin/shopanalyse/index'),
+        name: 'shopanalyse',
+        meta: { title: '商店分析', icon: 'user', noCache: true }
+      }
+    ]
   }
 ]
 

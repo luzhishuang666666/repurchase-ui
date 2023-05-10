@@ -167,11 +167,9 @@
 
                 <!-- 添加或修改对话框 -->
                 <el-dialog :title="title" :visible.sync="open" width="500px">
-                    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-                        
+                    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
                                     <el-form-item label="购买者编号" prop="itemId">
-                                        <el-input v-model="form.itemId" placeholder="购买者编号"
-                                                      />
+                                        <el-input v-model="form.itemId" placeholder="购买者编号"/>
                                     </el-form-item>
                                     <el-form-item label="商店名称" prop="shopId">
                                         <!-- <el-input v-model="form.shopId" placeholder="商店编号"/> -->
@@ -185,7 +183,7 @@
                                     </el-form-item>
                                     <el-form-item label="购买者年龄范围" prop="ageRange">
                                         <!-- <el-input v-model="form.ageRange" placeholder="购买者年龄范围"/> -->
-                                        <el-select v-model="queryParams.ageRange" placeholder="用户记录购买者年龄范围" clearable size="small">
+                                        <el-select v-model="form.ageRange" placeholder="用户记录购买者年龄范围" clearable size="small">
                                             <el-option
                                                 v-for="dict in ageRangeOptions"
                                                 :key="dict.value"
@@ -195,7 +193,7 @@
                                     </el-form-item>
                                     <el-form-item label="购买者性别" prop="gender">
                                         <!-- <el-input v-model="form.gender" placeholder="购买者性别"/> -->
-                                        <el-select v-model="queryParams.gender" placeholder="用户记录购买者性别" clearable size="small">
+                                        <el-select v-model="form.gender" placeholder="用户记录购买者性别" clearable size="small">
                                             <el-option
                                                 v-for="dict in genderOptions"
                                                 :key="dict.value"
@@ -205,7 +203,7 @@
                                     </el-form-item>
                                     <el-form-item label="商品名称" prop="commodityId">
                                         <!-- <el-input v-model="form.commodityId" placeholder="商品编号"/> -->
-                                        <el-select v-model="queryParams.commodityId" placeholder="请选择" clearable size="small" >
+                                        <el-select v-model="form.commodityId" placeholder="请选择" clearable size="small" >
                                             <el-option
                                                 v-for="dict in commodityIdOptions"
                                                 :key="dict.key"
@@ -215,7 +213,7 @@
                                     </el-form-item>
                                     <el-form-item label="操作行为类别" prop="actionType">
                                         <!-- <el-input v-model="form.actionType" placeholder="操作行为类别"/> -->
-                                        <el-select v-model="queryParams.actionType" placeholder="用户记录操作行为类别" clearable size="small">
+                                        <el-select v-model="form.actionType" placeholder="用户记录操作行为类别" clearable size="small">
                                             <el-option
                                                 v-for="dict in actionTypeOptions"
                                                 :key="dict.value"
