@@ -39,22 +39,6 @@
                     <el-table-column type="selection" width="55" align="center" /><el-table-column label="品牌名称"
                         align="center" prop="brandName" :show-overflow-tooltip="true" /><el-table-column label="品牌备注"
                         align="center" prop="brandRemark" :show-overflow-tooltip="true" />
-                    <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-                        <template slot-scope="scope">
-                            <el-popconfirm class="delete-popconfirm" title="确认要修改吗?" confirm-button-text="修改"
-                                @onConfirm="handleUpdate(scope.row)">
-                                <el-button slot="reference" v-permisaction="['admin:brand:edit']" size="mini" type="text"
-                                    icon="el-icon-edit">修改
-                                </el-button>
-                            </el-popconfirm>
-                            <el-popconfirm class="delete-popconfirm" title="确认要删除吗?" confirm-button-text="删除"
-                                @onConfirm="handleDelete(scope.row)">
-                                <el-button slot="reference" v-permisaction="['admin:brand:remove']" size="mini" type="text"
-                                    icon="el-icon-delete">删除
-                                </el-button>
-                            </el-popconfirm>
-                        </template>
-                    </el-table-column>
                 </el-table>
 
                 <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageIndex"

@@ -4,33 +4,12 @@
         <template #wrapper>
             <el-card class="box-card">
                 <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-                    <el-form-item label="商品名称" prop="commodityId">
-                        <el-select v-model="queryParams.commodityId" placeholder="请选择" clearable size="small" >
-                            <el-option
-                                v-for="dict in commodityIdOptions"
-                                :key="dict.key"
-                                :label="dict.value"
-                                :value="dict.key"/>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="商店名称" prop="shopId">
-                        <el-select v-model="queryParams.shopId" placeholder="请选择" clearable size="small" >
-                            <el-option
-                                v-for="dict in shopIdOptions"
-                                :key="dict.key"
-                                :label="dict.value"
-                                :value="dict.key"/>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="状态" prop="status">
-                        <el-select v-model="queryParams.status" placeholder="商店商品汇总状态" clearable size="small">
-                            <el-option
-                                v-for="dict in statusOptions"
-                                :key="dict.value"
-                                :label="dict.label"
-                                :value="dict.value"/>
-                        </el-select>
-                    </el-form-item>
+                    <el-form-item label="模板名称" prop="templateName"><el-input v-model="queryParams.templateName" placeholder="请输入模板名称" clearable
+                                              size="small" @keyup.enter.native="handleQuery"/>
+                            </el-form-item>
+                        <el-form-item label="模板类型" prop="templateType"><el-input v-model="queryParams.templateType" placeholder="请输入模板类型" clearable
+                                              size="small" @keyup.enter.native="handleQuery"/>
+                            </el-form-item>
                         
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -41,7 +20,7 @@
                 <el-row :gutter="10" class="mb8">
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['admin:shopCommodity:add']"
+                                v-permisaction="['admin:templateModel:add']"
                                 type="primary"
                                 icon="el-icon-plus"
                                 size="mini"
@@ -51,7 +30,7 @@
                     </el-col>
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['admin:shopCommodity:edit']"
+                                v-permisaction="['admin:templateModel:edit']"
                                 type="success"
                                 icon="el-icon-edit"
                                 size="mini"
@@ -62,7 +41,7 @@
                     </el-col>
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['admin:shopCommodity:remove']"
+                                v-permisaction="['admin:templateModel:remove']"
                                 type="danger"
                                 icon="el-icon-delete"
                                 size="mini"
@@ -73,21 +52,29 @@
                     </el-col>
                 </el-row>
 
-                <el-table v-loading="loading" :data="shopCommodityList" @selection-change="handleSelectionChange">
-                    <el-table-column type="selection" width="55" align="center"/><el-table-column label="商品名称" align="center" prop="commodityId" :formatter="commodityIdFormat">
-                                <template slot-scope="scope">
-                                    {{ commodityIdFormat(scope.row) }}
-                                </template>
-                            </el-table-column><el-table-column label="商店名称" align="center" prop="shopId" :formatter="shopIdFormat">
-                                <template slot-scope="scope">
-                                    {{ shopIdFormat(scope.row) }}
-                                </template>
-                            </el-table-column><el-table-column label="状态" align="center" prop="status"
-                                                 :formatter="statusFormat">
-                                    <template slot-scope="scope">
-                                        {{ statusFormat(scope.row) }}
-                                    </template>
-                                </el-table-column>
+                <el-table v-loading="loading" :data="templateModelList" @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="55" align="center"/><el-table-column label="模板名称" align="center" prop="templateName"
+                                                 :show-overflow-tooltip="true"/><el-table-column label="模板类型" align="center" prop="templateType"
+                                                 :show-overflow-tooltip="true"/>
+                    <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                        <template slot-scope="scope">
+                         <el-popconfirm
+                            class="delete-popconfirm"
+                            title="确认要删除吗?"
+                            confirm-button-text="删除"
+                            @onConfirm="handleDelete(scope.row)"
+                         >
+                            <el-button
+                              slot="reference"
+                              v-permisaction="['admin:templateModel:remove']"
+                              size="mini"
+                              type="text"
+                              icon="el-icon-delete"
+                            >删除
+                            </el-button>
+                         </el-popconfirm>
+                        </template>
+                    </el-table-column>
                 </el-table>
 
                 <pagination
@@ -102,35 +89,17 @@
                 <el-dialog :title="title" :visible.sync="open" width="500px">
                     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                         
-                                    <el-form-item label="商品编号" prop="commodityId">
-                                        <!-- <el-input v-model="form.commodityId" placeholder="商品编号"/> -->
-                                        <el-select v-model="form.commodityId" placeholder="请选择" clearable size="small" >
-                                            <el-option
-                                                v-for="dict in commodityIdOptions"
-                                                :key="dict.key"
-                                                :label="dict.value"
-                                                :value="dict.key"/>
-                                        </el-select>
+                                    <el-form-item label="模板名称" prop="templateName">
+                                        <el-input v-model="form.templateName" placeholder="模板名称"
+                                                      />
                                     </el-form-item>
-                                    <el-form-item label="商店编号" prop="shopId">
-                                        <!-- <el-input v-model="form.shopId" placeholder="商店编号"/> -->
-                                        <el-select v-model="form.shopId" placeholder="请选择" clearable size="small" >
-                                            <el-option
-                                                v-for="dict in shopIdOptions"
-                                                :key="dict.key"
-                                                :label="dict.value"
-                                                :value="dict.key"/>
-                                        </el-select>
+                                    <el-form-item label="模板类型" prop="templateType">
+                                        <el-input v-model="form.templateType" placeholder="模板类型"
+                                                      />
                                     </el-form-item>
-                                    <el-form-item label="状态" prop="status">
-                                        <!-- <el-input v-model="form.status" placeholder="状态"/> -->
-                                        <el-select v-model="form.status" placeholder="商店商品汇总状态" clearable size="small">
-                                            <el-option
-                                                v-for="dict in statusOptions"
-                                                :key="dict.value"
-                                                :label="dict.label"
-                                                :value="dict.value"/>
-                                        </el-select>
+                                    <el-form-item label="模板参数" prop="templateParam">
+                                        <el-input v-model="form.templateParam" placeholder="模板参数"
+                                                      />
                                     </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
@@ -144,12 +113,10 @@
 </template>
 
 <script>
-    import {addShopCommodity, delShopCommodity, getShopCommodity, listShopCommodity, updateShopCommodity} from '@/api/admin/shop-commodity'
+    import {addTemplateModel, delTemplateModel, getTemplateModel, listTemplateModel, updateTemplateModel} from '@/api/admin/template-model'
     
-    import {listCommodity } from '@/api/admin/commodity'
-    import {listShop } from '@/api/admin/shop'
     export default {
-        name: 'ShopCommodity',
+        name: 'TemplateModel',
         components: {
         },
         data() {
@@ -171,45 +138,36 @@
                 isEdit: false,
                 // 类型数据字典
                 typeOptions: [],
-                shopCommodityList: [],
-                statusOptions: [],
+                templateModelList: [],
+                
                 // 关系表类型
-                commodityIdOptions :[],
-                shopIdOptions :[],
                 
                 // 查询参数
                 queryParams: {
                     pageIndex: 1,
                     pageSize: 10,
-                    commodityId:undefined,
-                    shopId:undefined,
-                    status:undefined,
+                    templateName:undefined,
+                    templateType:undefined,
                     
                 },
                 // 表单参数
                 form: {
                 },
                 // 表单校验
-                rules: {commodityId:  [ {required: true, message: '商品编号不能为空', trigger: 'blur'} ],
-                shopId:  [ {required: true, message: '商店编号不能为空', trigger: 'blur'} ],
-                status:  [ {required: true, message: '状态不能为空', trigger: 'blur'} ],
+                rules: {templateName:  [ {required: true, message: '模板名称不能为空', trigger: 'blur'} ],
+                templateType:  [ {required: true, message: '模板类型不能为空', trigger: 'blur'} ],
                 }
         }
         },
         created() {
             this.getList()
-            this.getCommodityItems()
-            this.getShopItems()
-            this.getDicts('sys_shop_commodity_status').then(response => {
-                this.statusOptions = response.data
-            })
             },
         methods: {
             /** 查询参数列表 */
             getList() {
                 this.loading = true
-                listShopCommodity(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-                        this.shopCommodityList = response.data.list
+                listTemplateModel(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+                        this.templateModelList = response.data.list
                         this.total = response.data.count
                         this.loading = false
                     }
@@ -225,9 +183,9 @@
                 this.form = {
                 
                 id: undefined,
-                commodityId: undefined,
-                shopId: undefined,
-                status: undefined,
+                templateName: undefined,
+                templateType: undefined,
+                templateParam: undefined,
             }
                 this.resetForm('form')
             },
@@ -237,26 +195,7 @@
             fileClose: function() {
               this.fileOpen = false
             },
-            commodityIdFormat(row) {
-                return this.selectItemsLabel(this.commodityIdOptions, row.commodityId)
-            },
-            shopIdFormat(row) {
-                return this.selectItemsLabel(this.shopIdOptions, row.shopId)
-            },
-            statusFormat(row) {
-                return this.selectDictLabel(this.statusOptions, row.status)
-            },
             // 关系
-            getCommodityItems() {
-               this.getItems(listCommodity, undefined).then(res => {
-                   this.commodityIdOptions = this.setItems(res, 'id', 'commodityName')
-               })
-            },
-            getShopItems() {
-               this.getItems(listShop, undefined).then(res => {
-                   this.shopIdOptions = this.setItems(res, 'id', 'shopName')
-               })
-            },
             // 文件
             /** 搜索按钮操作 */
             handleQuery() {
@@ -273,7 +212,7 @@
             handleAdd() {
                 this.reset()
                 this.open = true
-                this.title = '添加商店商品汇总'
+                this.title = '添加模型模板'
                 this.isEdit = false
             },
             // 多选框选中数据
@@ -287,10 +226,10 @@
                 this.reset()
                 const id =
                 row.id || this.ids
-                getShopCommodity(id).then(response => {
+                getTemplateModel(id).then(response => {
                     this.form = response.data
                     this.open = true
-                    this.title = '修改商店商品汇总'
+                    this.title = '修改模型模板'
                     this.isEdit = true
                 })
             },
@@ -299,7 +238,7 @@
                 this.$refs['form'].validate(valid => {
                     if (valid) {
                         if (this.form.id !== undefined) {
-                            updateShopCommodity(this.form).then(response => {
+                            updateTemplateModel(this.form).then(response => {
                                 if (response.code === 200) {
                                     this.msgSuccess(response.msg)
                                     this.open = false
@@ -309,7 +248,7 @@
                                 }
                             })
                         } else {
-                            addShopCommodity(this.form).then(response => {
+                            addTemplateModel(this.form).then(response => {
                                 if (response.code === 200) {
                                     this.msgSuccess(response.msg)
                                     this.open = false
@@ -331,7 +270,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(function () {
-                      return delShopCommodity( { 'ids': Ids })
+                      return delTemplateModel( { 'ids': Ids })
                 }).then((response) => {
                    if (response.code === 200) {
                      this.msgSuccess(response.msg)

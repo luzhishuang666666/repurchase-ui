@@ -45,3 +45,10 @@ export function delUserRecord(data) {
     })
 }
 
+// 获取所有的UserRecord
+export function allUserRecord() {
+    return request({
+        url: '/api/v1/user-record/allRecord',
+        method: 'post'
+    })
+}
